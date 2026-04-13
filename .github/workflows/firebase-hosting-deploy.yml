@@ -23,18 +23,16 @@ jobs:
           channel: stable
 
       - name: Install dependencies
-        working-directory: OneDrive/Documents/projects/college
         run: flutter pub get
 
       - name: Build Flutter web
-        working-directory: OneDrive/Documents/projects/college
         run: flutter build web --release --target lib/src/main.dart
 
       - name: Deploy to Firebase Hosting (Live)
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KSRCE_ERP }}
-          entryPoint: OneDrive/Documents/projects/college
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KSRCE_CAMPUS_STACK }}
+          entryPoint: .
           channelId: live
-          projectId: ksrce-erp
+          projectId: ksrce-campus-stack
