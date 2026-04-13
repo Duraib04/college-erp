@@ -373,9 +373,19 @@ class _LoginFormCard extends StatelessWidget {
               decoration: InputDecoration(
                 hintText: 'Enter your password',
                 prefixIcon: const Icon(Icons.lock_outline),
-                suffixIcon: IconButton(
-                  icon: Icon(obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined),
-                  onPressed: onToggleObscure,
+                suffixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined),
+                      onPressed: onToggleObscure,
+                    ),
+                    IconButton(
+                      tooltip: 'Login',
+                      icon: const Icon(Icons.arrow_circle_right_outlined, color: AppColors.primary),
+                      onPressed: isLoading ? null : onLogin,
+                    ),
+                  ],
                 ),
               ),
               validator: (v) => (v == null || v.isEmpty) ? 'Please enter your password' : null,
