@@ -366,6 +366,10 @@ class _LoginFormCard extends StatelessWidget {
             TextFormField(
               controller: passwordController,
               obscureText: obscurePassword,
+              textInputAction: TextInputAction.done,
+              onFieldSubmitted: (_) {
+                if (!isLoading) onLogin();
+              },
               decoration: InputDecoration(
                 hintText: 'Enter your password',
                 prefixIcon: const Icon(Icons.lock_outline),
@@ -376,7 +380,22 @@ class _LoginFormCard extends StatelessWidget {
               ),
               validator: (v) => (v == null || v.isEmpty) ? 'Please enter your password' : null,
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton(
+                onPressed: isLoading ? null : onLogin,
+                child: isLoading
+                    ? const SizedBox(
+                        height: 22,
+                        width: 22,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      )
+                    : const Text('Sign In'),
+              ),
+            ),
+            const SizedBox(height: 10),
             Row(
               children: [
                 Checkbox(
@@ -393,22 +412,7 @@ class _LoginFormCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 18),
-            SizedBox(
-              width: double.infinity,
-              height: 48,
-              child: ElevatedButton(
-                onPressed: isLoading ? null : onLogin,
-                child: isLoading
-                    ? const SizedBox(
-                        height: 22,
-                        width: 22,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                      )
-                    : const Text('Sign In'),
-              ),
-            ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
           ],
         ),
       ),
