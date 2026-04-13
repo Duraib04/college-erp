@@ -15,6 +15,10 @@ class _AdminStudentManagementPageState extends State<AdminStudentManagementPage>
   String? _filterDept;
   String? _filterYear;
   static const List<String> _defaultCommunities = ['OC', 'BC', 'MBC', 'SC', 'ST'];
+  static const List<String> _defaultReligions = ['Hindu', 'Muslim', 'Christian', 'Other'];
+  static const List<String> _defaultNationalities = ['Indian', 'Other'];
+  static const List<String> _defaultMotherTongues = ['Tamil', 'English', 'Hindi', 'Telugu', 'Malayalam', 'Kannada', 'Other'];
+  static const List<String> _defaultStates = ['Tamil Nadu', 'Kerala', 'Karnataka', 'Andhra Pradesh', 'Telangana', 'Puducherry', 'Other'];
 
   @override
   Widget build(BuildContext context) {
@@ -132,6 +136,22 @@ class _AdminStudentManagementPageState extends State<AdminStudentManagementPage>
     String selectedCommunity = existingCommunity.isEmpty
       ? (communityOptions.isNotEmpty ? communityOptions.first : 'OC')
       : (communityOptions.contains(existingCommunity) ? existingCommunity : 'Others');
+
+    final religionOptions = _defaultReligions;
+    final existingReligion = _s('religion').trim();
+    String selectedReligion = existingReligion.isEmpty
+      ? religionOptions.first
+      : (religionOptions.contains(existingReligion) ? existingReligion : 'Other');
+
+    final nationalityOptions = _defaultNationalities;
+    final existingNationality = _s('nationality').trim().isEmpty ? 'Indian' : _s('nationality').trim();
+    String selectedNationality = nationalityOptions.contains(existingNationality) ? existingNationality : 'Other';
+
+    final motherTongueOptions = _defaultMotherTongues;
+    final existingMotherTongue = _s('motherTongue').trim();
+    String selectedMotherTongue = existingMotherTongue.isEmpty
+      ? motherTongueOptions.first
+      : (motherTongueOptions.contains(existingMotherTongue) ? existingMotherTongue : 'Other');
     final motherTongueC = TextEditingController(text: _s('motherTongue'));
     final idMark1C = TextEditingController(text: _s('identificationMark1'));
     final idMark2C = TextEditingController(text: _s('identificationMark2'));
@@ -145,6 +165,9 @@ class _AdminStudentManagementPageState extends State<AdminStudentManagementPage>
     final addressC = TextEditingController(text: _s('address'));
     final districtC = TextEditingController(text: _s('permanentDistrict'));
     final stateC = TextEditingController(text: _s('permanentState').isEmpty ? 'Tamil Nadu' : _s('permanentState'));
+    final stateOptions = _defaultStates;
+    final existingState = stateC.text.trim().isEmpty ? 'Tamil Nadu' : stateC.text.trim();
+    String selectedState = stateOptions.contains(existingState) ? existingState : 'Other';
     final pincodeC = TextEditingController(text: _s('permanentPincode'));
 
     // Family
@@ -221,9 +244,52 @@ class _AdminStudentManagementPageState extends State<AdminStudentManagementPage>
             onChanged: (v) => setS(() => gender = v!))),
           _field(dobC, 'Date of Birth (YYYY-MM-DD)', icon: Icons.cake_outlined),
         ]),
-        _row([_field(bloodC, 'Blood Group', icon: Icons.bloodtype_outlined), _field(nationalityC, 'Nationality')]),
         _row([
-          _field(religionC, 'Religion'),
+          _field(bloodC, 'Blood Group', icon: Icons.bloodtype_outlined),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: DropdownButtonFormField<String>(
+              initialValue: selectedNationality,
+              isDense: true,
+              decoration: InputDecoration(
+                labelText: 'Nationality',
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+              ),
+              items: nationalityOptions.map((n) => DropdownMenuItem(value: n, child: Text(n))).toList(),
+              onChanged: (v) => setS(() {
+                selectedNationality = v ?? selectedNationality;
+                if (selectedNationality != 'Other') {
+                  nationalityC.text = selectedNationality;
+                }
+              }),
+            ),
+          ),
+        ]),
+        if (selectedNationality == 'Other')
+          _field(nationalityC, 'Type Nationality', required: true),
+        _row([
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: DropdownButtonFormField<String>(
+              initialValue: selectedReligion,
+              isDense: true,
+              decoration: InputDecoration(
+                labelText: 'Religion',
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+              ),
+              items: religionOptions.map((r) => DropdownMenuItem(value: r, child: Text(r))).toList(),
+              onChanged: (v) => setS(() {
+                selectedReligion = v ?? selectedReligion;
+                if (selectedReligion != 'Other') {
+                  religionC.text = selectedReligion;
+                }
+              }),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: DropdownButtonFormField<String>(
@@ -248,11 +314,36 @@ class _AdminStudentManagementPageState extends State<AdminStudentManagementPage>
             ),
           ),
         ]),
+        if (selectedReligion == 'Other')
+          _field(religionC, 'Type Religion', required: true),
         if (selectedCommunity == 'Others')
           _field(communityC, 'Type New Community', required: true),
-        _row([_field(motherTongueC, 'Mother Tongue'), Padding(padding: const EdgeInsets.only(bottom: 10), child: CheckboxListTile(
+        _row([
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: DropdownButtonFormField<String>(
+              initialValue: selectedMotherTongue,
+              isDense: true,
+              decoration: InputDecoration(
+                labelText: 'Mother Tongue',
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+              ),
+              items: motherTongueOptions.map((m) => DropdownMenuItem(value: m, child: Text(m))).toList(),
+              onChanged: (v) => setS(() {
+                selectedMotherTongue = v ?? selectedMotherTongue;
+                if (selectedMotherTongue != 'Other') {
+                  motherTongueC.text = selectedMotherTongue;
+                }
+              }),
+            ),
+          ),
+          Padding(padding: const EdgeInsets.only(bottom: 10), child: CheckboxListTile(
           title: const Text('First Graduate', style: TextStyle(fontSize: 13)), value: firstGraduate, dense: true, contentPadding: EdgeInsets.zero,
           controlAffinity: ListTileControlAffinity.leading, onChanged: (v) => setS(() => firstGraduate = v!)))]),
+        if (selectedMotherTongue == 'Other')
+          _field(motherTongueC, 'Type Mother Tongue', required: true),
         _field(idMark1C, 'Identification Mark 1'), _field(idMark2C, 'Identification Mark 2'),
       ]));
 
@@ -261,7 +352,31 @@ class _AdminStudentManagementPageState extends State<AdminStudentManagementPage>
         _row([_field(emailC, 'Domain Email', icon: Icons.email_outlined), _field(personalEmailC, 'Personal Email', icon: Icons.alternate_email)]),
         _field(phoneC, 'Phone Number', icon: Icons.phone_outlined, keyType: TextInputType.phone),
         _field(addressC, 'Address', icon: Icons.home_outlined, maxLines: 2),
-        _row([_field(districtC, 'District'), _field(stateC, 'State')]),
+        _row([
+          _field(districtC, 'District'),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: DropdownButtonFormField<String>(
+              initialValue: selectedState,
+              isDense: true,
+              decoration: InputDecoration(
+                labelText: 'State / Region',
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+              ),
+              items: stateOptions.map((s) => DropdownMenuItem(value: s, child: Text(s))).toList(),
+              onChanged: (v) => setS(() {
+                selectedState = v ?? selectedState;
+                if (selectedState != 'Other') {
+                  stateC.text = selectedState;
+                }
+              }),
+            ),
+          ),
+        ]),
+        if (selectedState == 'Other')
+          _field(stateC, 'Type State / Region', required: true),
         _field(pincodeC, 'Pincode', keyType: TextInputType.number),
         _sectionLabel('Family Information', Icons.family_restroom),
         _row([_field(fatherNameC, 'Father Name'), _field(fatherPhoneC, 'Father Phone', keyType: TextInputType.phone)]),
@@ -364,8 +479,16 @@ class _AdminStudentManagementPageState extends State<AdminStudentManagementPage>
                     }
                     final manualCommunity = communityC.text.trim().toUpperCase();
                     final resolvedCommunity = selectedCommunity == 'Others' ? manualCommunity : selectedCommunity;
+                    final resolvedReligion = selectedReligion == 'Other' ? religionC.text.trim() : selectedReligion;
+                    final resolvedNationality = selectedNationality == 'Other' ? nationalityC.text.trim() : selectedNationality;
+                    final resolvedMotherTongue = selectedMotherTongue == 'Other' ? motherTongueC.text.trim() : selectedMotherTongue;
+                    final resolvedState = selectedState == 'Other' ? stateC.text.trim() : selectedState;
                     if (resolvedCommunity.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please choose or enter a community'), backgroundColor: Colors.red));
+                      return;
+                    }
+                    if (resolvedReligion.isEmpty || resolvedNationality.isEmpty || resolvedMotherTongue.isEmpty || resolvedState.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill all required dropdown custom values'), backgroundColor: Colors.red));
                       return;
                     }
 
@@ -404,11 +527,11 @@ class _AdminStudentManagementPageState extends State<AdminStudentManagementPage>
 
                     final data = <String, dynamic>{
                       'name': nameC.text, 'gender': gender, 'dateOfBirth': dobC.text, 'bloodGroup': bloodC.text,
-                      'nationality': nationalityC.text, 'religion': religionC.text, 'community': resolvedCommunity,
-                      'motherTongue': motherTongueC.text, 'identificationMark1': idMark1C.text, 'identificationMark2': idMark2C.text,
+                      'nationality': resolvedNationality, 'religion': resolvedReligion, 'community': resolvedCommunity,
+                      'motherTongue': resolvedMotherTongue, 'identificationMark1': idMark1C.text, 'identificationMark2': idMark2C.text,
                       'firstGraduate': firstGraduate,
                       'email': emailC.text, 'personalEmail': personalEmailC.text, 'phone': phoneC.text,
-                      'address': addressC.text, 'permanentDistrict': districtC.text, 'permanentState': stateC.text, 'permanentPincode': pincodeC.text,
+                      'address': addressC.text, 'permanentDistrict': districtC.text, 'permanentState': resolvedState, 'permanentPincode': pincodeC.text,
                       'fatherName': fatherNameC.text, 'fatherPhone': fatherPhoneC.text, 'fatherOccupation': fatherOccC.text,
                       'fatherAnnualIncome': int.tryParse(fatherIncomeC.text) ?? 0,
                       'motherName': motherNameC.text, 'motherPhone': motherPhoneC.text, 'motherOccupation': motherOccC.text,

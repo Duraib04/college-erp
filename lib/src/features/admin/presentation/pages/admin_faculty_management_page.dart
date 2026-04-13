@@ -11,6 +11,15 @@ class AdminFacultyManagementPage extends StatefulWidget {
 }
 
 class _AdminFacultyManagementPageState extends State<AdminFacultyManagementPage> {
+  static const List<String> _defaultDesignations = [
+    'Professor',
+    'Associate Professor',
+    'Assistant Professor',
+    'Lecturer',
+    'Lab Instructor',
+    'Other',
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Consumer<DataService>(builder: (context, ds, _) {
@@ -83,6 +92,7 @@ class _AdminFacultyManagementPageState extends State<AdminFacultyManagementPage>
     final desigC = TextEditingController();
     final qualC = TextEditingController();
     String? selectedDeptId;
+    String selectedDesignation = _defaultDesignations.first;
 
     showDialog(context: context, builder: (ctx) => StatefulBuilder(builder: (ctx2, setS) => AlertDialog(
       backgroundColor: AppColors.surface,
@@ -99,7 +109,22 @@ class _AdminFacultyManagementPageState extends State<AdminFacultyManagementPage>
           items: ds.departments.map((d) => DropdownMenuItem(value: d['departmentId'] as String, child: Text('${d['departmentCode']} - ${d['departmentName']}', style: const TextStyle(fontSize: 13)))).toList(),
           onChanged: (v) => setS(() => selectedDeptId = v)),
         const SizedBox(height: 10),
-        TextField(controller: desigC, decoration: const InputDecoration(labelText: 'Designation', border: OutlineInputBorder())),
+        DropdownButtonFormField<String>(
+          initialValue: selectedDesignation,
+          isExpanded: true,
+          decoration: const InputDecoration(labelText: 'Designation', border: OutlineInputBorder()),
+          items: _defaultDesignations.map((d) => DropdownMenuItem(value: d, child: Text(d))).toList(),
+          onChanged: (v) => setS(() {
+            selectedDesignation = v ?? selectedDesignation;
+            if (selectedDesignation != 'Other') {
+              desigC.text = selectedDesignation;
+            }
+          }),
+        ),
+        if (selectedDesignation == 'Other') ...[
+          const SizedBox(height: 10),
+          TextField(controller: desigC, decoration: const InputDecoration(labelText: 'Type Designation', border: OutlineInputBorder())),
+        ],
         const SizedBox(height: 10),
         TextField(controller: qualC, decoration: const InputDecoration(labelText: 'Qualification', border: OutlineInputBorder())),
       ]))),
@@ -108,8 +133,9 @@ class _AdminFacultyManagementPageState extends State<AdminFacultyManagementPage>
         ElevatedButton(
           style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: Colors.white),
           onPressed: () {
-            if (nameC.text.isNotEmpty && selectedDeptId != null) {
-              ds.addFaculty({'name': nameC.text, 'email': emailC.text, 'phone': phoneC.text, 'departmentId': selectedDeptId, 'designation': desigC.text, 'qualification': qualC.text, 'specialization': '', 'dateOfJoining': DateTime.now().toIso8601String().substring(0, 10)});
+            final resolvedDesignation = selectedDesignation == 'Other' ? desigC.text.trim() : selectedDesignation;
+            if (nameC.text.isNotEmpty && selectedDeptId != null && resolvedDesignation.isNotEmpty) {
+              ds.addFaculty({'name': nameC.text, 'email': emailC.text, 'phone': phoneC.text, 'departmentId': selectedDeptId, 'designation': resolvedDesignation, 'qualification': qualC.text, 'specialization': '', 'dateOfJoining': DateTime.now().toIso8601String().substring(0, 10)});
               Navigator.pop(ctx); setState(() {});
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${nameC.text} added as faculty'), backgroundColor: AppColors.secondary, behavior: SnackBarBehavior.floating, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))));
             }
@@ -130,6 +156,8 @@ class _AdminFacultyManagementPageState extends State<AdminFacultyManagementPage>
     final expC = TextEditingController(text: '${fac['experience'] ?? ''}');
     final dojC = TextEditingController(text: fac['dateOfJoining'] as String? ?? '');
     String? selectedDeptId = fac['departmentId'] as String?;
+    final existingDesignation = (fac['designation'] as String? ?? '').trim();
+    String selectedDesignation = _defaultDesignations.contains(existingDesignation) ? existingDesignation : 'Other';
     final fid = fac['facultyId'] as String? ?? '';
 
     showDialog(context: context, builder: (ctx) => StatefulBuilder(builder: (ctx2, setS) => AlertDialog(
@@ -151,7 +179,22 @@ class _AdminFacultyManagementPageState extends State<AdminFacultyManagementPage>
           items: ds.departments.map((d) => DropdownMenuItem(value: d['departmentId'] as String, child: Text('${d['departmentCode']} - ${d['departmentName']}', style: const TextStyle(fontSize: 13)))).toList(),
           onChanged: (v) => setS(() => selectedDeptId = v)),
         const SizedBox(height: 10),
-        TextField(controller: desigC, decoration: const InputDecoration(labelText: 'Designation', prefixIcon: Icon(Icons.work_outline), border: OutlineInputBorder())),
+        DropdownButtonFormField<String>(
+          initialValue: selectedDesignation,
+          isExpanded: true,
+          decoration: const InputDecoration(labelText: 'Designation', prefixIcon: Icon(Icons.work_outline), border: OutlineInputBorder()),
+          items: _defaultDesignations.map((d) => DropdownMenuItem(value: d, child: Text(d))).toList(),
+          onChanged: (v) => setS(() {
+            selectedDesignation = v ?? selectedDesignation;
+            if (selectedDesignation != 'Other') {
+              desigC.text = selectedDesignation;
+            }
+          }),
+        ),
+        if (selectedDesignation == 'Other') ...[
+          const SizedBox(height: 10),
+          TextField(controller: desigC, decoration: const InputDecoration(labelText: 'Type Designation', border: OutlineInputBorder())),
+        ],
         const SizedBox(height: 10),
         TextField(controller: qualC, decoration: const InputDecoration(labelText: 'Qualification', prefixIcon: Icon(Icons.school_outlined), border: OutlineInputBorder())),
         const SizedBox(height: 10),
@@ -169,13 +212,14 @@ class _AdminFacultyManagementPageState extends State<AdminFacultyManagementPage>
           icon: const Icon(Icons.save, size: 18),
           style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: Colors.white),
           onPressed: () {
-            if (nameC.text.isNotEmpty) {
+            final resolvedDesignation = selectedDesignation == 'Other' ? desigC.text.trim() : selectedDesignation;
+            if (nameC.text.isNotEmpty && resolvedDesignation.isNotEmpty) {
               ds.updateFaculty(fid, {
                 'name': nameC.text,
                 'email': emailC.text,
                 'phone': phoneC.text,
                 'departmentId': selectedDeptId,
-                'designation': desigC.text,
+                'designation': resolvedDesignation,
                 'qualification': qualC.text,
                 'specialization': specC.text,
                 'experience': int.tryParse(expC.text) ?? expC.text,
