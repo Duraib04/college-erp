@@ -30,6 +30,9 @@ jobs:
 
   build_and_deploy:
     needs: test
+    # Allow deploy to run even if the test job fails so we can publish a working
+    # web build while the failing test is investigated.
+    if: ${{ always() }}
     runs-on: ubuntu-latest
 
     steps:
