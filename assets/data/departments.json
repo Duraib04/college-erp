@@ -22,5 +22,6 @@
   { "id": 21, "code": "MEEST", "name": "M.E. Embedded System Technologies", "level": "PG", "established": 2024, "intake": 6, "nbaStatus": "Not Eligible" },
   { "id": 22, "code": "MTECHIT", "name": "M.Tech. Information Technology", "level": "PG", "established": 2012, "intake": 6, "nbaStatus": "Not Eligible" },
   { "id": 23, "code": "MEISE", "name": "M.E. Industrial Safety and Engineering", "level": "PG", "established": 2011, "intake": 18, "nbaStatus": "Eligible" },
-  { "id": 24, "code": "MECAD", "name": "M.E. CAD/CAM", "level": "PG", "established": 2024, "intake": 6, "nbaStatus": "Not Eligible" }
+  { "id": 24, "code": "MECAD", "name": "M.E. CAD/CAM", "level": "PG", "established": 2024, "intake": 6, "nbaStatus": "Not Eligible" },
+  { "id": 25, "code": "PLACEMENT", "name": "Placement and Training Cell", "level": "Admin", "established": 2020, "intake": 0, "nbaStatus": "N/A" }
 ]

@@ -109,9 +109,9 @@ class _AdminDepartmentsPageState extends State<AdminDepartmentsPage> {
         TextField(controller: nameC, decoration: InputDecoration(labelText: 'Department Name *', prefixIcon: const Icon(Icons.business_outlined, size: 18),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)))),
         const SizedBox(height: 12),
-        TextField(controller: codeC, enabled: !isEdit, decoration: InputDecoration(labelText: 'Department Code (e.g. CSE) *', prefixIcon: const Icon(Icons.code, size: 18),
+        TextField(controller: codeC, decoration: InputDecoration(labelText: 'Department Code (e.g. CSE) *', prefixIcon: const Icon(Icons.code, size: 18),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-          helperText: isEdit ? 'Code cannot be changed' : null)),
+          helperText: isEdit ? 'Changing the code will update the department ID and related records.' : null)),
       ]),
       actions: [
         TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
@@ -124,7 +124,10 @@ class _AdminDepartmentsPageState extends State<AdminDepartmentsPage> {
               return;
             }
             if (isEdit) {
-              ds.updateDepartment(dept['departmentId'] as String, {'departmentName': nameC.text.trim()});
+              ds.updateDepartment(dept['departmentId'] as String, {
+                'departmentName': nameC.text.trim(),
+                'departmentCode': codeC.text.trim().toUpperCase(),
+              });
             } else {
               ds.addDepartment({'departmentName': nameC.text.trim(), 'departmentCode': codeC.text.trim().toUpperCase(), 'hodId': ''});
             }

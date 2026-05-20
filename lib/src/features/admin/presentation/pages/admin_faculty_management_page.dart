@@ -37,6 +37,19 @@ class _AdminFacultyManagementPageState extends State<AdminFacultyManagementPage>
                 const Icon(Icons.person_add, color: AppColors.primary, size: 28),
                 const SizedBox(width: 12),
                 const Expanded(child: Text('Faculty Management', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.textDark))),
+                const SizedBox(width: 12),
+                OutlinedButton.icon(
+                  icon: const Icon(Icons.workspace_premium_outlined, size: 18),
+                  label: const Text('Add Placement Head'),
+                  onPressed: () => _showAddPlacementFacultyDialog(context, ds, true),
+                ),
+                const SizedBox(width: 8),
+                OutlinedButton.icon(
+                  icon: const Icon(Icons.groups_outlined, size: 18),
+                  label: const Text('Add Placement Faculty'),
+                  onPressed: () => _showAddPlacementFacultyDialog(context, ds, false),
+                ),
+                const SizedBox(width: 8),
                 ElevatedButton.icon(
                   icon: const Icon(Icons.add, size: 18), label: const Text('Add Faculty'),
                   style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
@@ -83,6 +96,67 @@ class _AdminFacultyManagementPageState extends State<AdminFacultyManagementPage>
         }),
       );
     });
+  }
+
+  void _showAddPlacementFacultyDialog(BuildContext context, DataService ds, bool isHOD) {
+    final nameC = TextEditingController();
+    final emailC = TextEditingController();
+    final phoneC = TextEditingController();
+    final specC = TextEditingController();
+    final qualC = TextEditingController();
+    final expC = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.surface,
+        title: Text(isHOD ? 'Add Placement Head' : 'Add Placement Faculty', style: const TextStyle(color: AppColors.textDark)),
+        content: SizedBox(
+          width: 420,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(controller: nameC, decoration: const InputDecoration(labelText: 'Full Name', border: OutlineInputBorder())),
+                const SizedBox(height: 10),
+                TextField(controller: emailC, decoration: const InputDecoration(labelText: 'Email', border: OutlineInputBorder())),
+                const SizedBox(height: 10),
+                TextField(controller: phoneC, decoration: const InputDecoration(labelText: 'Phone', border: OutlineInputBorder())),
+                const SizedBox(height: 10),
+                TextField(controller: qualC, decoration: const InputDecoration(labelText: 'Qualification', border: OutlineInputBorder())),
+                const SizedBox(height: 10),
+                TextField(controller: specC, decoration: const InputDecoration(labelText: 'Specialization', border: OutlineInputBorder())),
+                const SizedBox(height: 10),
+                TextField(controller: expC, decoration: const InputDecoration(labelText: 'Experience (years)', border: OutlineInputBorder())),
+              ],
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: Colors.white),
+            onPressed: () {
+              if (nameC.text.trim().isEmpty) return;
+              ds.addPlacementFaculty({
+                'name': nameC.text.trim(),
+                'email': emailC.text.trim(),
+                'phone': phoneC.text.trim(),
+                'designation': isHOD ? 'Associate Professor' : 'Assistant Professor',
+                'qualification': qualC.text.trim(),
+                'specialization': specC.text.trim(),
+                'experience': expC.text.trim(),
+                'dateOfJoining': DateTime.now().toIso8601String().substring(0, 10),
+              }, isHOD: isHOD);
+              Navigator.pop(ctx);
+              setState(() {});
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(isHOD ? 'Placement head created' : 'Placement faculty created'), backgroundColor: AppColors.secondary));
+            },
+            child: const Text('Create'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showAddFacultyDialog(BuildContext context, DataService ds) {

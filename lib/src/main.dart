@@ -27,6 +27,10 @@ import 'features/student/presentation/pages/student_placements_page.dart';
 import 'features/student/presentation/pages/student_events_page.dart';
 import 'features/student/presentation/pages/student_settings_page.dart';
 import 'features/student/presentation/pages/student_portal_page.dart';
+import 'features/placement/presentation/pages/placement_drive_list_page.dart';
+import 'features/placement/presentation/pages/admin_placement_drives_page.dart';
+import 'features/placement/presentation/pages/student_skills_page.dart';
+import 'features/placement/presentation/pages/mentor_management_page.dart';
 
 import 'features/faculty/presentation/pages/faculty_dashboard_page.dart';
 import 'features/faculty/presentation/pages/faculty_profile_page.dart';
@@ -61,6 +65,8 @@ import 'features/admin/presentation/pages/admin_student_management_page.dart';
 import 'features/admin/presentation/pages/admin_course_management_page.dart';
 import 'features/admin/presentation/pages/admin_class_management_page.dart';
 import 'features/admin/presentation/pages/admin_hod_assignment_page.dart';
+import 'features/admin/presentation/pages/admin_placement_management_page.dart';
+import 'features/admin/presentation/pages/admin_placement_reports_page.dart';
 
 import 'features/hod/presentation/pages/hod_dashboard_page.dart';
 import 'features/hod/presentation/pages/hod_faculty_page.dart';
@@ -183,6 +189,8 @@ final GoRouter _router = GoRouter(
     GoRoute(path: '/student/leave', builder: (c, s) => _s('/student/leave', const StudentLeavePage())),
     GoRoute(path: '/student/certificates', builder: (c, s) => _s('/student/certificates', const StudentCertificatesPage())),
     GoRoute(path: '/student/placements', builder: (c, s) => _s('/student/placements', const StudentPlacementsPage())),
+    GoRoute(path: '/student/placement-drives', builder: (c, s) => _s('/student/placement-drives', const PlacementDriveListPage())),
+    GoRoute(path: '/student/skills', builder: (c, s) => _s('/student/skills', const StudentSkillsPage())),
     GoRoute(path: '/student/events', builder: (c, s) => _s('/student/events', const StudentEventsPage())),
     GoRoute(path: '/student/settings', builder: (c, s) => _s('/student/settings', const StudentSettingsPage())),
     GoRoute(path: '/student/files', builder: (c, s) => _s('/student/files', const FileManagerPage())),
@@ -210,6 +218,7 @@ final GoRouter _router = GoRouter(
     GoRoute(path: '/faculty/adviser', builder: (c, s) => _f('/faculty/adviser', const FacultyAdviserPage())),
     GoRoute(path: '/faculty/settings', builder: (c, s) => _f('/faculty/settings', const FacultySettingsPage())),
     GoRoute(path: '/faculty/files', builder: (c, s) => _f('/faculty/files', const FileManagerPage())),
+    GoRoute(path: '/faculty/mentor-management', builder: (c, s) => _f('/faculty/mentor-management', const MentorManagementPage())),
     // Admin routes
     GoRoute(path: '/admin/dashboard', builder: (c, s) => _a('/admin/dashboard', const AdminDashboardPage())),
     GoRoute(path: '/admin/departments', builder: (c, s) => _a('/admin/departments', const AdminDepartmentsPage())),
@@ -224,6 +233,9 @@ final GoRouter _router = GoRouter(
     GoRoute(path: '/admin/profile-approvals', builder: (c, s) => _a('/admin/profile-approvals', const ProfileEditApprovalsPage())),
     GoRoute(path: '/admin/settings', builder: (c, s) => _a('/admin/settings', const AdminSettingsPage())),
     GoRoute(path: '/admin/files', builder: (c, s) => _a('/admin/files', const FileManagerPage())),
+    GoRoute(path: '/admin/placement-management', builder: (c, s) => _a('/admin/placement-management', const AdminPlacementManagementPage())),
+    GoRoute(path: '/admin/placement-reports', builder: (c, s) => _a('/admin/placement-reports', const AdminPlacementReportsPage())),
+    GoRoute(path: '/admin/placement-drives', builder: (c, s) => _a('/admin/placement-drives', const AdminPlacementDrivesPage())),
     // HOD routes
     GoRoute(path: '/hod/dashboard', builder: (c, s) => _h('/hod/dashboard', const HodDashboardPage())),
     GoRoute(path: '/hod/profile', builder: (c, s) => _h('/hod/profile', const FacultyProfilePage())),

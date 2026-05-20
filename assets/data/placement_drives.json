@@ -1,0 +1,87 @@
+[
+  {
+    "driveId": "DRIVE001",
+    "companyName": "TCS",
+    "companyLogo": "https://via.placeholder.com/100?text=TCS",
+    "visitDate": "2026-05-15",
+    "registrationDeadline": "2026-05-10",
+    "basePackage": "6.5 LPA",
+    "highestPackage": "9.2 LPA",
+    "description": "IT Services and Consulting",
+    "jobProfile": "Software Development Engineer",
+    "selectedDepartments": ["CSE", "IT", "CSECS"],
+    "eligibilityCriteria": {
+      "minimumCGPA": 7.0,
+      "percentageRequired": 60,
+      "yearEligible": "Final Year",
+      "backlogsAllowed": 0
+    },
+    "requiredSkills": [
+      "Java",
+      "Python",
+      "Data Structures",
+      "Database Design",
+      "SQL"
+    ],
+    "skillMatchPercentage": 60,
+    "status": "Open",
+    "totalPositions": 45,
+    "applicantCount": 0
+  },
+  {
+    "driveId": "DRIVE002",
+    "companyName": "Infosys",
+    "companyLogo": "https://via.placeholder.com/100?text=Infosys",
+    "visitDate": "2026-05-20",
+    "registrationDeadline": "2026-05-15",
+    "basePackage": "5.0 LPA",
+    "highestPackage": "7.8 LPA",
+    "description": "Technology Services",
+    "jobProfile": "Systems Engineer",
+    "selectedDepartments": ["CSE", "IT", "MECH"],
+    "eligibilityCriteria": {
+      "minimumCGPA": 6.5,
+      "percentageRequired": 65,
+      "yearEligible": "Final Year",
+      "backlogsAllowed": 0
+    },
+    "requiredSkills": [
+      "C++",
+      "Linux",
+      "Cloud Computing",
+      "Problem Solving"
+    ],
+    "skillMatchPercentage": 50,
+    "status": "Open",
+    "totalPositions": 60,
+    "applicantCount": 0
+  },
+  {
+    "driveId": "DRIVE003",
+    "companyName": "Accenture",
+    "companyLogo": "https://via.placeholder.com/100?text=Accenture",
+    "visitDate": "2026-05-25",
+    "registrationDeadline": "2026-05-18",
+    "basePackage": "4.5 LPA",
+    "highestPackage": "6.5 LPA",
+    "description": "Consulting and Professional Services",
+    "jobProfile": "Associate Software Engineer",
+    "selectedDepartments": ["CSE", "IT", "AIDS"],
+    "eligibilityCriteria": {
+      "minimumCGPA": 6.0,
+      "percentageRequired": 60,
+      "yearEligible": "Final Year, Pre-Final Year",
+      "backlogsAllowed": 1
+    },
+    "requiredSkills": [
+      "Web Development",
+      "JavaScript",
+      "React",
+      "REST APIs"
+    ],
+    "skillMatchPercentage": 40,
+    "status": "Open",
+    "totalPositions": 75,
+    "applicantCount": 0
+  }
+]

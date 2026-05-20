@@ -42,6 +42,45 @@ void main() {
       expect(ds.departments.first['departmentName'], 'Computer Science and Engineering');
     });
 
+    test('updateDepartment cascades when the department code changes', () {
+      ds.departments.add({
+        'departmentId': 'DEPT_CSE',
+        'departmentName': 'Computer Science',
+        'departmentCode': 'CSE',
+      });
+
+      ds.faculty.add({
+        'facultyId': 'FAC001',
+        'departmentId': 'DEPT_CSE',
+        'name': 'A',
+      });
+      ds.students.add({
+        'studentId': 'STU001',
+        'departmentId': 'DEPT_CSE',
+        'name': 'S1',
+      });
+      ds.courses.add({
+        'courseId': 'CSE101',
+        'departmentId': 'DEPT_CSE',
+      });
+      ds.classes.add({
+        'classId': 'CSE_1_A',
+        'departmentId': 'DEPT_CSE',
+      });
+
+      ds.updateDepartment('DEPT_CSE', {
+        'departmentName': 'Computer Science and Engineering',
+        'departmentCode': 'CSE_NEW',
+      });
+
+      expect(ds.departments.first['departmentId'], 'DEPT_CSE_NEW');
+      expect(ds.departments.first['departmentCode'], 'CSE_NEW');
+      expect(ds.faculty.first['departmentId'], 'DEPT_CSE_NEW');
+      expect(ds.students.first['departmentId'], 'DEPT_CSE_NEW');
+      expect(ds.courses.first['departmentId'], 'DEPT_CSE_NEW');
+      expect(ds.classes.first['departmentId'], 'DEPT_CSE_NEW');
+    });
+
     test('deleteDepartment cascades related faculty, students, courses, classes', () {
       ds.departments.addAll([
         {'departmentId': 'DEPT_CSE', 'departmentName': 'Computer Science', 'departmentCode': 'CSE'},

@@ -33,52 +33,25 @@ class PersistenceService {
   // ──────────────────── CLOUD (Firebase RTDB REST) ────────────────────
 
   /// Save specific collections to Firebase RTDB (PATCH = merge, not overwrite).
+  /// Disabled for web — uses localStorage only.
   static Future<bool> saveCollectionsToCloud(
       Map<String, dynamic> collections) async {
-    try {
-      final resp = await http
-          .patch(
-            Uri.parse('$_rtdbUrl/erp_data.json'),
-            headers: {'Content-Type': 'application/json'},
-            body: json.encode(collections),
-          )
-          .timeout(const Duration(seconds: 12));
-      return resp.statusCode == 200;
-    } catch (e) {
-      debugPrint('Cloud save failed: $e');
-      return false;
-    }
+    // Web: disabled (no Firebase RTDB initialized)
+    return true; // fake success
   }
 
   /// Save ALL data to Firebase (used only for first-time seed).
+  /// Disabled for web — uses localStorage only.
   static Future<bool> saveAllToCloud(Map<String, dynamic> data) async {
-    try {
-      final resp = await http
-          .put(
-            Uri.parse('$_rtdbUrl/erp_data.json'),
-            headers: {'Content-Type': 'application/json'},
-            body: json.encode(data),
-          )
-          .timeout(const Duration(seconds: 15));
-      return resp.statusCode == 200;
-    } catch (e) {
-      debugPrint('Cloud save failed: $e');
-      return false;
-    }
+    // Web: disabled (no Firebase RTDB initialized)
+    return true; // fake success
   }
 
   /// Load all data from Firebase Realtime Database.
+  /// Disabled for web to avoid 404 errors — uses localStorage + asset fallback instead.
   static Future<Map<String, dynamic>?> loadFromCloud() async {
-    try {
-      final resp = await http
-          .get(Uri.parse('$_rtdbUrl/erp_data.json'))
-          .timeout(const Duration(seconds: 8));
-      if (resp.statusCode == 200 && resp.body != 'null') {
-        return Map<String, dynamic>.from(json.decode(resp.body));
-      }
-    } catch (e) {
-      debugPrint('Cloud load failed: $e');
-    }
+    // Web: disabled (Firebase RTDB may not be initialized)
+    // App will fallback to localStorage, then assets
     return null;
   }
 

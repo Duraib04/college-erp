@@ -36,6 +36,8 @@ class DataService extends ChangeNotifier {
   List<Map<String, dynamic>> _library = [];
   List<Map<String, dynamic>> _placements = [];
   List<Map<String, dynamic>> _placementApplications = [];
+  List<Map<String, dynamic>> _placementDrives = [];
+  List<Map<String, dynamic>> _studentSkills = [];
   List<Map<String, dynamic>> _syllabus = [];
   List<Map<String, dynamic>> _research = [];
   List<Map<String, dynamic>> _facultyTimetable = [];
@@ -73,6 +75,8 @@ class DataService extends ChangeNotifier {
   List<Map<String, dynamic>> get library => _library;
   List<Map<String, dynamic>> get placements => _placements;
   List<Map<String, dynamic>> get placementApplications => _placementApplications;
+  List<Map<String, dynamic>> get placementDrives => _placementDrives;
+  List<Map<String, dynamic>> get studentSkills => _studentSkills;
   List<Map<String, dynamic>> get syllabus => _syllabus;
   List<Map<String, dynamic>> get research => _research;
   List<Map<String, dynamic>> get facultyTimetable => _facultyTimetable;
@@ -175,6 +179,7 @@ class DataService extends ChangeNotifier {
       if (local != null) {
         _hydrateFromMap(local);
         _loadedCollections.addAll(_allKeys);
+        _ensurePlacementDemoIdentities();
         _applyAllPreApprovedChanges();
         _isLoaded = true;
         _skipPersist = true;
@@ -191,6 +196,7 @@ class DataService extends ChangeNotifier {
       if (cloud != null) {
         _hydrateFromMap(cloud);
         _loadedCollections.addAll(_allKeys);
+        _ensurePlacementDemoIdentities();
         await PersistenceService.saveLocal(cloud); // cache locally
         _applyAllPreApprovedChanges();
         _isLoaded = true;
@@ -203,6 +209,7 @@ class DataService extends ChangeNotifier {
       // ── STEP 4: First run — seed from bundled JSON assets ──
       await _seedFromAssets();
       _loadedCollections.addAll(_allKeys);
+      _ensurePlacementDemoIdentities();
       _applyAllPreApprovedChanges();
       _isLoaded = true;
       _skipPersist = true;
@@ -241,6 +248,8 @@ class DataService extends ChangeNotifier {
     _library = _asList(data['library']);
     _placements = _asList(data['placements']);
     _placementApplications = _asList(data['placementApplications']);
+    _placementDrives = _asList(data['placementDrives']);
+    _studentSkills = _asList(data['studentSkills']);
     _syllabus = _asList(data['syllabus']);
     _research = _asList(data['research']);
     _facultyTimetable = _asList(data['facultyTimetable']);
@@ -283,6 +292,8 @@ class DataService extends ChangeNotifier {
       'library': _library,
       'placements': _placements,
       'placementApplications': _placementApplications,
+      'placementDrives': _placementDrives,
+      'studentSkills': _studentSkills,
       'syllabus': _syllabus,
       'research': _research,
       'facultyTimetable': _facultyTimetable,
@@ -397,12 +408,13 @@ class DataService extends ChangeNotifier {
       _loadJson('assets/data/library.json'),              // 20
       _loadJson('assets/data/placements.json'),           // 21
       _loadJson('assets/data/placement_applications.json'), // 22
-      _loadJson('assets/data/syllabus.json'),             // 23
-      _loadJson('assets/data/research.json'),             // 24
-      _loadJson('assets/data/faculty_timetable.json'),    // 25
-      _loadJson('assets/data/course_outcomes.json'),         // 26
-      _loadJson('assets/data/course_diary.json'),             // 27
-      _loadJson('assets/data/profile_edit_requests.json'),  // 28
+      _loadJson('assets/data/placement_drives.json'),      // 23
+      _loadJson('assets/data/syllabus.json'),             // 24
+      _loadJson('assets/data/research.json'),             // 25
+      _loadJson('assets/data/faculty_timetable.json'),    // 26
+      _loadJson('assets/data/course_outcomes.json'),      // 27
+      _loadJson('assets/data/course_diary.json'),         // 28
+      _loadJson('assets/data/profile_edit_requests.json'), // 29
     ]);
     _students = futures[0];
     _users = futures[1];
@@ -427,12 +439,13 @@ class DataService extends ChangeNotifier {
     _library = futures[20];
     _placements = futures[21];
     _placementApplications = futures[22];
-    _syllabus = futures[23];
-    _research = futures[24];
-    _facultyTimetable = futures[25];
-    _courseOutcomes = futures[26];
-    _courseDiary = futures[27];
-    _profileEditRequests = futures[28];
+    _placementDrives = futures[23];
+    _syllabus = futures[24];
+    _research = futures[25];
+    _facultyTimetable = futures[26];
+    _courseOutcomes = futures[27];
+    _courseDiary = futures[28];
+    _profileEditRequests = futures[29];
   }
 
   /// Persist data: saves locally instantly, debounces cloud writes.
@@ -477,6 +490,121 @@ class DataService extends ChangeNotifier {
         _applyProfileChanges(req);
       }
     }
+  }
+
+  void _ensurePlacementDemoIdentities() {
+    void upsertUser({
+      required String id,
+      required String password,
+      required String role,
+      required String label,
+      required String portalRole,
+    }) {
+      final idx = _users.indexWhere((u) => (u['id'] as String?) == id);
+      final entry = {
+        'id': id,
+        'password': SecurityService.hashPassword(password, id),
+        'role': role,
+        'label': label,
+        'portalRole': portalRole,
+      };
+      if (idx == -1) {
+        _users.add(entry);
+      } else {
+        _users[idx] = {..._users[idx], ...entry};
+      }
+    }
+
+    void upsertFaculty({
+      required String facultyId,
+      required String name,
+      required String email,
+      required String phone,
+      required bool isHod,
+      required String designation,
+      required String qualification,
+      required String specialization,
+      required String experience,
+    }) {
+      final idx = _faculty.indexWhere((f) => (f['facultyId'] as String?) == facultyId);
+      final entry = {
+        'facultyId': facultyId,
+        'name': name,
+        'email': email,
+        'phone': phone,
+        'designation': designation,
+        'departmentId': 'DEPT_PLACEMENT',
+        'isHOD': isHod,
+        'isClassAdviser': false,
+        'adviserFor': null,
+        'menteeIds': <String>[],
+        'courseIds': <String>[],
+        'qualification': qualification,
+        'specialization': specialization,
+        'experience': experience,
+      };
+      if (idx == -1) {
+        _faculty.add(entry);
+      } else {
+        _faculty[idx] = {..._faculty[idx], ...entry};
+      }
+    }
+
+    upsertUser(
+      id: 'PLA001',
+      password: 'ksrce@pla001',
+      role: 'hod',
+      label: 'HOD - Placement and Training Cell',
+      portalRole: 'hod',
+    );
+    upsertUser(
+      id: 'PLA002',
+      password: 'ksrce@pla002',
+      role: 'faculty',
+      label: 'Faculty - Placement Coordinator',
+      portalRole: 'faculty',
+    );
+    upsertUser(
+      id: 'PLA003',
+      password: 'ksrce@pla003',
+      role: 'faculty',
+      label: 'Faculty - Placement Coordinator',
+      portalRole: 'faculty',
+    );
+
+    upsertFaculty(
+      facultyId: 'PLA001',
+      name: 'Dr. K. Ramakrishnan',
+      email: 'ramakrishnan@ksrce.ac.in',
+      phone: '9500123456',
+      isHod: true,
+      designation: 'Associate Professor',
+      qualification: 'Ph.D.',
+      specialization: 'Placement Strategy & Industry Relations',
+      experience: '12 years',
+    );
+    upsertFaculty(
+      facultyId: 'PLA002',
+      name: 'Ms. R. Priya',
+      email: 'priya@ksrce.ac.in',
+      phone: '9500234567',
+      isHod: false,
+      designation: 'Assistant Professor',
+      qualification: 'M.Tech.',
+      specialization: 'Student Development & Training',
+      experience: '5 years',
+    );
+    upsertFaculty(
+      facultyId: 'PLA003',
+      name: 'Mr. V. Suresh',
+      email: 'suresh@ksrce.ac.in',
+      phone: '9500345678',
+      isHod: false,
+      designation: 'Assistant Professor',
+      qualification: 'M.Tech.',
+      specialization: 'Campus Placement & Recruitment',
+      experience: '4 years',
+    );
   }
 
   /// Safely cast a dynamic value (from Firebase JSON) to List<Map<String, dynamic>>.
@@ -627,6 +755,133 @@ class DataService extends ChangeNotifier {
       totalClasses += (a['totalClasses'] as int? ?? 0);
     }
     return totalClasses > 0 ? (totalPresent / totalClasses * 100) : 0;
+  }
+
+  // ─── PLACEMENT QUERIES ────────────────────────────────────
+
+  /// Get placement drives eligible for a student based on skill match
+  List<Map<String, dynamic>> getEligibleDrivesForStudent(String studentId) {
+    final student = _students.firstWhere(
+      (s) => s['studentId'] == studentId,
+      orElse: () => <String, dynamic>{},
+    );
+    if (student.isEmpty) return [];
+
+    final studentDept = student['departmentId'] as String? ?? '';
+    final studentSkills = getStudentSkills(studentId);
+    final studentSkillNames = studentSkills.map((s) => s['skillName'] as String).toSet();
+
+    return _placementDrives.where((drive) {
+      // Check department eligibility
+      final selectedDepts = (drive['selectedDepartments'] as List<dynamic>?)?.cast<String>() ?? [];
+      final deptMatch = selectedDepts.any((dept) => dept.contains(studentDept.replaceAll('DEPT_', '')));
+      if (!deptMatch) return false;
+
+      // Check skill match percentage
+      final requiredSkills = (drive['requiredSkills'] as List<dynamic>?)?.cast<String>() ?? [];
+      if (requiredSkills.isEmpty) return true;
+
+      final matchedSkills = requiredSkills.where((skill) => studentSkillNames.contains(skill)).length;
+      final matchPercentage = (matchedSkills / requiredSkills.length * 100).toInt();
+      final required = (drive['skillMatchPercentage'] as int?) ?? 40;
+
+      return matchPercentage >= required;
+    }).toList();
+  }
+
+  /// Get all skills for a student
+  List<Map<String, dynamic>> getStudentSkills(String studentId) {
+    return _studentSkills.where((s) => s['studentId'] == studentId).toList();
+  }
+
+  /// Add a skill to student profile
+  void addStudentSkill(String studentId, String skillName, String proficiencyLevel) {
+    final skillId = 'SKILL${(_studentSkills.length + 1).toString().padLeft(4, '0')}';
+    _studentSkills.add({
+      'skillId': skillId,
+      'studentId': studentId,
+      'skillName': skillName,
+      'proficiencyLevel': proficiencyLevel,
+      'acquiredDate': DateTime.now().toIso8601String().substring(0, 10),
+    });
+    notifyListeners();
+  }
+
+  /// Remove a skill from student profile
+  void removeStudentSkill(String skillId) {
+    _studentSkills.removeWhere((s) => s['skillId'] == skillId);
+    notifyListeners();
+  }
+
+  /// Calculate skill match percentage for a drive
+  int calculateSkillMatch(String studentId, String driveId) {
+    final drive = _placementDrives.firstWhere(
+      (d) => d['driveId'] == driveId,
+      orElse: () => <String, dynamic>{},
+    );
+    if (drive.isEmpty) return 0;
+
+    final requiredSkills = (drive['requiredSkills'] as List<dynamic>?)?.cast<String>() ?? [];
+    if (requiredSkills.isEmpty) return 100;
+
+    final studentSkills = getStudentSkills(studentId);
+    final studentSkillNames = studentSkills.map((s) => s['skillName'] as String).toSet();
+
+    final matchedSkills = requiredSkills.where((skill) => studentSkillNames.contains(skill)).length;
+    return (matchedSkills / requiredSkills.length * 100).toInt();
+  }
+
+  /// Add a new placement drive (admin/faculty)
+  void addPlacementDrive(Map<String, dynamic> drive) {
+    final id = 'DRIVE${(_placementDrives.length + 1).toString().padLeft(3, '0')}';
+    drive['driveId'] = id;
+    drive['applicantCount'] = drive['applicantCount'] ?? 0;
+    _placementDrives.add(drive);
+    notifyListeners();
+  }
+
+  /// Student applies to a drive
+  void applyToDrive(String studentId, String driveId) {
+    final driveIdx = _placementDrives.indexWhere((d) => d['driveId'] == driveId);
+    if (driveIdx == -1) return;
+
+    // create application record
+    final appId = 'PAPP${(_placementApplications.length + 1).toString().padLeft(4, '0')}';
+    final application = {
+      'applicationId': appId,
+      'driveId': driveId,
+      'studentId': studentId,
+      'appliedOn': DateTime.now().toIso8601String().substring(0, 10),
+      'status': 'applied'
+    };
+    _placementApplications.add(application);
+
+    // increment applicant count in drive
+    _placementDrives[driveIdx]['applicantCount'] = (_placementDrives[driveIdx]['applicantCount'] as int? ?? 0) + 1;
+    notifyListeners();
+  }
+
+  /// Get placement applications for a student
+  List<Map<String, dynamic>> getApplicationsForStudent(String studentId) {
+    return _placementApplications.where((a) => a['studentId'] == studentId).toList();
+  }
+
+  /// Get applications for a drive
+  List<Map<String, dynamic>> getApplicationsForDrive(String driveId) {
+    return _placementApplications.where((a) => a['driveId'] == driveId).toList();
+  }
+
+  /// Assign a mentor to a single student (HOD / Faculty action)
+  void assignSingleMentor(String facultyId, String studentId) {
+    // update student record
+    final sIdx = _students.indexWhere((s) => s['studentId'] == studentId);
+    if (sIdx != -1) {
+      _students[sIdx]['mentorId'] = facultyId;
+    }
+
+    // add to mentor assignments list
+    _mentorAssignments.add({'facultyId': facultyId, 'studentId': studentId, 'assignedOn': DateTime.now().toIso8601String().substring(0,10)});
+    notifyListeners();
   }
 
   double get currentCGPA {
@@ -849,6 +1104,32 @@ class DataService extends ChangeNotifier {
       'password': SecurityService.hashPassword(defaultPwd, id),
       'role': 'faculty',
       'label': 'Faculty - ${fac['name']}',
+    });
+
+    notifyListeners();
+  }
+
+  /// Create a placement portal user + faculty profile with PLA-prefixed ID.
+  /// Use this for the placement head and placement faculty accounts.
+  void addPlacementFaculty(Map<String, dynamic> fac, {required bool isHOD}) {
+    final id = 'PLA${(_faculty.where((f) => (f['facultyId'] as String?)?.startsWith('PLA') == true).length + 1).toString().padLeft(3, '0')}';
+    final isHead = isHOD;
+    fac['facultyId'] = id;
+    fac['departmentId'] = 'DEPT_PLACEMENT';
+    fac['isHOD'] = isHead;
+    fac['isClassAdviser'] = false;
+    fac['adviserFor'] = null;
+    fac['menteeIds'] = <String>[];
+    fac['courseIds'] = <String>[];
+    _faculty.add(fac);
+
+    final defaultPwd = 'ksrce@${id.toLowerCase()}';
+    _users.add({
+      'id': id,
+      'password': SecurityService.hashPassword(defaultPwd, id),
+      'role': isHead ? 'hod' : 'faculty',
+      'label': isHead ? 'HOD - Placement and Training Cell' : 'Faculty - Placement Coordinator',
+      'portalRole': isHead ? 'hod' : 'faculty',
     });
 
     notifyListeners();
@@ -1638,7 +1919,7 @@ class DataService extends ChangeNotifier {
     });
 
     final requestId = 'PER${_profileEditRequests.length.toString().padLeft(3, '0')}';
-    final firstApprover = approvalChain.first as Map<String, dynamic>;
+    final firstApprover = approvalChain.first;
     final approverId = (firstApprover['approverId'] as String?) ?? '';
     final approverName = (firstApprover['approverName'] as String?) ?? approverId;
 
@@ -2481,7 +2762,51 @@ class DataService extends ChangeNotifier {
   void updateDepartment(String departmentId, Map<String, dynamic> updates) {
     final idx = _departments.indexWhere((d) => d['departmentId'] == departmentId);
     if (idx != -1) {
-      _departments[idx].addAll(updates);
+      final normalizedUpdates = Map<String, dynamic>.from(updates);
+      final previousDepartmentId = _departments[idx]['departmentId'] as String? ?? departmentId;
+      final previousDepartmentCode = _departments[idx]['departmentCode'] as String? ?? '';
+
+      if (normalizedUpdates.containsKey('departmentCode')) {
+        normalizedUpdates['departmentCode'] = (normalizedUpdates['departmentCode'] as String).trim().toUpperCase();
+      }
+
+      _departments[idx].addAll(normalizedUpdates);
+
+      final updatedDepartmentCode = _departments[idx]['departmentCode'] as String? ?? previousDepartmentCode;
+      final updatedDepartmentId = 'DEPT_$updatedDepartmentCode';
+      if (updatedDepartmentId != previousDepartmentId) {
+        _departments[idx]['departmentId'] = updatedDepartmentId;
+
+        for (final faculty in _faculty) {
+          if (faculty['departmentId'] == previousDepartmentId) {
+            faculty['departmentId'] = updatedDepartmentId;
+          }
+        }
+        for (final student in _students) {
+          if (student['departmentId'] == previousDepartmentId) {
+            student['departmentId'] = updatedDepartmentId;
+          }
+        }
+        for (final course in _courses) {
+          if (course['departmentId'] == previousDepartmentId) {
+            course['departmentId'] = updatedDepartmentId;
+          }
+        }
+        for (final schoolClass in _classes) {
+          if (schoolClass['departmentId'] == previousDepartmentId) {
+            schoolClass['departmentId'] = updatedDepartmentId;
+          }
+        }
+
+        final oldHodId = _departments[idx]['hodId'] as String?;
+        if (oldHodId != null) {
+          final hodIdx = _faculty.indexWhere((f) => f['facultyId'] == oldHodId);
+          if (hodIdx != -1) {
+            _faculty[hodIdx]['departmentId'] = updatedDepartmentId;
+          }
+        }
+      }
+
       notifyListeners();
     }
   }

@@ -40,5 +40,61 @@
     "email": "ksrsrini@gmail.com",
     "address": "5/492, K.S.R. Kalvi Nagar, Kuchipalayam Post, Tiruchengode - 637 215",
     "status": "Active"
+  },
+  {
+    "id": "FAC001",
+    "password": "f7f9bc9d21775a7aeb998de89982cbe49c11923da30b7a46bd8b0c8e251a3363",
+    "role": "hod",
+    "label": "HOD - Placement and Training Cell",
+    "portalRole": "hod"
+  },
+  {
+    "id": "FAC002",
+    "password": "802100d1c79b0906a6daa65273d88c03dfc73c14e63a5da8d391dd0ba3c3a521",
+    "role": "faculty",
+    "label": "Faculty - Placement Coordinator",
+    "portalRole": "faculty"
+  },
+  {
+    "id": "FAC003",
+    "password": "fba1d9642b7d3a983cf22cf8e77d299776493124df95039926964c2ff20ac47d",
+    "role": "faculty",
+    "label": "Faculty - Placement Coordinator",
+    "portalRole": "faculty"
+  },
+  {
+    "id": "PLA001",
+    "password": "a278eeadefad89bacd3b49a9e974a728d10fce7945a6b4c101142b0bd46ca4d6",
+    "role": "hod",
+    "label": "HOD - Placement and Training Cell",
+    "portalRole": "hod"
+  },
+  {
+    "id": "PLA002",
+    "password": "e7cedbdb13c849ccb1482586fc29577f1c6d844979b260d2a4ed5f9e6e98def5",
+    "role": "faculty",
+    "label": "Faculty - Placement Coordinator",
+    "portalRole": "faculty"
+  },
+  {
+    "id": "PLA003",
+    "password": "e0167116e686e37c2e3b1b0f0799ed3842e0da13f79ae9e93c5948f6a21bf2db",
+    "role": "faculty",
+    "label": "Faculty - Placement Coordinator",
+    "portalRole": "faculty"
+  },
+  {
+    "id": "STU001",
+    "password": "d76836e7cd57e327dbe4ac2fe2aec1bada416dc974615c1cd409a5ceae53f4b1",
+    "role": "student",
+    "label": "Demo Student - CSE",
+    "portalRole": "student"
+  },
+  {
+    "id": "ADMIN",
+    "password": "0fc0c70b93f6ed693f292eef1df5d9c344685cc373bd84e6ea78bb6262041fe9",
+    "role": "admin",
+    "label": "Admin User",
+    "portalRole": "admin"
   }
 ]
