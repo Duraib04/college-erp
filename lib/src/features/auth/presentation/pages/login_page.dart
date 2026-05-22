@@ -279,7 +279,7 @@ class _BrandPanel extends StatelessWidget {
                   children: [
                     Icon(Icons.shield_outlined, size: 18, color: Color(0xFF5D4DEF)),
                     SizedBox(width: 8),
-                    Text('Secure Login', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF5D4DEF))),
+                    const Text('Secure Login', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF5D4DEF))),
                   ],
                 ),
               ),
@@ -291,9 +291,9 @@ class _BrandPanel extends StatelessWidget {
             style: TextStyle(fontSize: 44, fontWeight: FontWeight.w800, color: Color(0xFF142955), height: 1.02),
           ),
           const SizedBox(height: 18),
-          const ConstrainedBox(
+          ConstrainedBox(
             constraints: BoxConstraints(maxWidth: 480),
-            child: Text(
+            child: const Text(
               'Streamline academics, simplify operations, and enhance campus experience with a unified platform built for excellence.',
               style: TextStyle(fontSize: 18, height: 1.45, color: Color(0xFF42597E)),
             ),
