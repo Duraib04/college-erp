@@ -44,7 +44,7 @@ jobs:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KSRCE_CAMPUS_STACK }}
           entryPoint: .
-          projectId: ksrce-campus-stack
+          projectId: ksrce-campusstack
           channelId: pr-${{ github.event.pull_request.number }}
           expires: 7d
 
@@ -55,5 +55,5 @@ jobs:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KSRCE_CAMPUS_STACK }}
           entryPoint: .
-          projectId: ksrce-campus-stack
+          projectId: ksrce-campusstack
           channelId: pr-${{ github.event.pull_request.number }}

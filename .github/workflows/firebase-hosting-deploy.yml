@@ -57,4 +57,4 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KSRCE_CAMPUS_STACK }}
           entryPoint: .
           channelId: live
-          projectId: ksrce-campus-stack
+          projectId: ksrce-campusstack

@@ -55,7 +55,7 @@ Purpose:
 
 Manual deployment:
 ```powershell
-firebase deploy --only hosting --project ksrce-campus-stack
+firebase deploy --only hosting --project ksrce-campusstack
 ```
 
 Automatic deployment (CI/CD):
@@ -64,10 +64,10 @@ Automatic deployment (CI/CD):
 - Uses GitHub secret:
   - `FIREBASE_SERVICE_ACCOUNT_KSRCE_CAMPUS_STACK`
 - Deploy target:
-  - `projectId: ksrce-campus-stack`
+  - `projectId: ksrce-campusstack`
 
 Production URL:
-- https://ksrce-campus-stack.web.app
+- https://ksrce-campusstack.web.app
 
 ---
 
@@ -82,5 +82,5 @@ In short:
 flutter pub get
 flutter test
 flutter build web --release --target lib/src/main.dart
-firebase deploy --only hosting --project ksrce-campus-stack
+firebase deploy --only hosting --project ksrce-campusstack
 ```

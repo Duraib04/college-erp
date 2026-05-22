@@ -23,7 +23,7 @@ git --version
 ```json
 {
   "projects": {
-    "default": "ksrce-campus-stack"
+    "default": "ksrce-campusstack"
   }
 }
 ```
@@ -60,11 +60,11 @@ flutter build web -t lib/src/main.dart
 Use when you want to release instantly from your machine.
 
 ```powershell
-firebase deploy --only hosting --project ksrce-campus-stack
+firebase deploy --only hosting --project ksrce-campusstack
 ```
 
 Live URL:
-- https://ksrce-campus-stack.web.app
+- https://ksrce-campusstack.web.app
 
 ## 4) Git + Release Workflow (Recommended)
 
@@ -121,7 +121,7 @@ flutter build web -t lib/src/main.dart
 
 ### GitHub Action fails on deploy
 - Verify secret exists: `FIREBASE_SERVICE_ACCOUNT_KSRCE_CAMPUS_STACK`
-- Verify workflow projectId is `ksrce-campus-stack`
+- Verify workflow projectId is `ksrce-campusstack`
 
 ## 8) Fast Checklist
 
@@ -131,5 +131,5 @@ Before release:
 - push to main OR deploy manually
 
 After release:
-- Open https://ksrce-campus-stack.web.app
+- Open https://ksrce-campusstack.web.app
 - Verify login, dashboard, and key pages
