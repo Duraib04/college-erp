@@ -38,22 +38,30 @@ class _AdminFacultyManagementPageState extends State<AdminFacultyManagementPage>
                 const SizedBox(width: 12),
                 const Expanded(child: Text('Faculty Management', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.textDark))),
                 const SizedBox(width: 12),
-                OutlinedButton.icon(
-                  icon: const Icon(Icons.workspace_premium_outlined, size: 18),
-                  label: const Text('Add Placement Head'),
-                  onPressed: () => _showAddPlacementFacultyDialog(context, ds, true),
-                ),
-                const SizedBox(width: 8),
-                OutlinedButton.icon(
-                  icon: const Icon(Icons.groups_outlined, size: 18),
-                  label: const Text('Add Placement Faculty'),
-                  onPressed: () => _showAddPlacementFacultyDialog(context, ds, false),
-                ),
-                const SizedBox(width: 8),
-                ElevatedButton.icon(
-                  icon: const Icon(Icons.add, size: 18), label: const Text('Add Faculty'),
-                  style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
-                  onPressed: () => _showAddFacultyDialog(context, ds),
+                Flexible(
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    alignment: WrapAlignment.end,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      OutlinedButton.icon(
+                        icon: const Icon(Icons.workspace_premium_outlined, size: 18),
+                        label: const Text('Add Placement Head'),
+                        onPressed: () => _showAddPlacementFacultyDialog(context, ds, true),
+                      ),
+                      OutlinedButton.icon(
+                        icon: const Icon(Icons.groups_outlined, size: 18),
+                        label: const Text('Add Placement Faculty'),
+                        onPressed: () => _showAddPlacementFacultyDialog(context, ds, false),
+                      ),
+                      ElevatedButton.icon(
+                        icon: const Icon(Icons.add, size: 18), label: const Text('Add Faculty'),
+                        style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+                        onPressed: () => _showAddFacultyDialog(context, ds),
+                      ),
+                    ],
+                  ),
                 ),
               ]),
               const SizedBox(height: 8),
@@ -72,22 +80,28 @@ class _AdminFacultyManagementPageState extends State<AdminFacultyManagementPage>
                     const SizedBox(width: 12),
                     Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Row(children: [
-                        Text(f['name'] as String? ?? '', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppColors.textDark)),
+                        Flexible(child: Text(f['name'] as String? ?? '', maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppColors.textDark))),
                         if (f['isHOD'] == true) ...[const SizedBox(width: 6), Container(padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2), decoration: BoxDecoration(color: AppColors.accent.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(4)), child: const Text('HOD', style: TextStyle(color: AppColors.accent, fontSize: 10, fontWeight: FontWeight.bold)))],
                       ]),
-                      Text('$fid | $deptCode | ${f['designation'] ?? ''}', style: const TextStyle(color: AppColors.textLight, fontSize: 12)),
+                      Text('$fid | $deptCode | ${f['designation'] ?? ''}', maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: AppColors.textLight, fontSize: 12)),
                     ])),
-                    if (!isMobile) Text(f['email'] as String? ?? '', style: const TextStyle(color: AppColors.textLight, fontSize: 11)),
-                    IconButton(
-                      icon: const Icon(Icons.edit, size: 18, color: AppColors.primary),
-                      tooltip: 'Edit Faculty',
-                      onPressed: () => _showEditFacultyDialog(context, ds, f),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.delete_outline, size: 18, color: Colors.red),
-                      tooltip: 'Delete Faculty',
-                      onPressed: () => _confirmDeleteFaculty(context, ds, fid, f['name'] as String? ?? ''),
-                    ),
+                    if (!isMobile) ...[
+                      const SizedBox(width: 12),
+                      Flexible(child: Text(f['email'] as String? ?? '', maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: AppColors.textLight, fontSize: 11))),
+                    ],
+                    const SizedBox(width: 4),
+                    Row(mainAxisSize: MainAxisSize.min, children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit, size: 18, color: AppColors.primary),
+                        tooltip: 'Edit Faculty',
+                        onPressed: () => _showEditFacultyDialog(context, ds, f),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete_outline, size: 18, color: Colors.red),
+                        tooltip: 'Delete Faculty',
+                        onPressed: () => _confirmDeleteFaculty(context, ds, fid, f['name'] as String? ?? ''),
+                      ),
+                    ]),
                   ]),
                 );
               }),
