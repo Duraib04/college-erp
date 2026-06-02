@@ -16,7 +16,7 @@ class _MentorManagementPageState extends State<MentorManagementPage> {
   @override
   Widget build(BuildContext context) {
     final ds = Provider.of<DataService>(context);
-    final faculties = ds.facultyList;
+    final faculties = ds.faculty;
     final students = ds.students;
 
     return Scaffold(
@@ -26,14 +26,24 @@ class _MentorManagementPageState extends State<MentorManagementPage> {
         child: Column(children: [
           DropdownButtonFormField<String>(
             initialValue: _selectedFaculty,
-            items: faculties.map((f) => DropdownMenuItem(value: f['facultyId'], child: Text(f['name'] ?? ''))).toList(),
+            items: faculties
+                .map((f) => DropdownMenuItem<String>(
+                      value: f['facultyId'] as String?,
+                      child: Text(f['name'] as String? ?? ''),
+                    ))
+                .toList(),
             onChanged: (v) => setState(() => _selectedFaculty = v),
             decoration: const InputDecoration(labelText: 'Select Faculty'),
           ),
           const SizedBox(height: 8),
           DropdownButtonFormField<String>(
             initialValue: _selectedStudent,
-            items: students.map((s) => DropdownMenuItem(value: s['studentId'], child: Text(s['name'] ?? ''))).toList(),
+            items: students
+                .map((s) => DropdownMenuItem<String>(
+                      value: s['studentId'] as String?,
+                      child: Text(s['name'] as String? ?? ''),
+                    ))
+                .toList(),
             onChanged: (v) => setState(() => _selectedStudent = v),
             decoration: const InputDecoration(labelText: 'Select Student'),
           ),
